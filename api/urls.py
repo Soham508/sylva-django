@@ -1,0 +1,13 @@
+from django.urls import path
+from . import views
+from .views import UserAPIView, protected_view, verify_token, test
+
+urlpatterns = [
+    path('test/', test, name="test"),
+    path('protected/', protected_view, name='protected'),
+    path('verify-token/', verify_token, name='verify-token'),
+    path('risk_aversion/', views.generate_risk_score, name='generate_risk_score'),
+    path('generate_portfolio/', views.generate_portfolio, name='generate_portfolio'),
+    path('users/<str:username>/', UserAPIView.as_view(), name='user-detail'),
+    path('users/', UserAPIView.as_view(), name='user-create'),
+]

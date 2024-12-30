@@ -1,0 +1,26 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Django stuff:
+*.sqlite3
+db.sqlite3
+*.log
+
+# Secret settings
+*.env
+.env
+firebase_key.json
+
+# Static and media files
+/static/
+/media/
+
+# IDEs and editors
+*.vscode/
+.idea/
+*.swp
