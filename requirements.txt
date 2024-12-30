@@ -9,7 +9,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 cryptography==44.0.0
 Django==4.1.13
-django-cors-headers==4.6.0
+django-cors-headers==3.10.0
 django-extensions==3.2.3
 django-redis==5.4.0
 djangorestframework==3.14.0
