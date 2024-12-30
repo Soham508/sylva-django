@@ -14,6 +14,8 @@ import os
 df = pd.read_csv(os.path.join(os.path.dirname(__file__), '../price_data.csv'))
 from .middleware import firebase_auth_required
 from firebase_admin import auth
+from django.core.cache import cache
+
 
 def test(request): 
     return JsonResponse({"message": "Working..."}, status= 200)
@@ -82,16 +84,24 @@ class UserAPIView(APIView):
     def get(self, request, username=None):
         print(username)
         if username is not None:
+            cache_key = f"user_data_{username}"
+            cached_data = cache.get(cache_key)
+    
+            if cached_data:
+                print('responding cached data...')
+                return Response({"user": cached_data, "success": True})
+    
             try:
                 user = User.objects.get(username=username)
             except User.DoesNotExist:
                 return Response({"detail": "User not found.", "success": False}, status=status.HTTP_404_NOT_FOUND)
-
+               
             serializer = UserSerializer(user)
-            return Response({"user":serializer.data, "success": True})
-
+            cache.set(cache_key, serializer.data, timeout=60 * 10)  # Cache for 10 minutes
+    
+            return Response({"user": serializer.data, "success": True})
+    
         return Response({"detail": "User ID is required for GET.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
-
     def post(self, request):
         username = request.data.get('username') 
         if username and User.objects.filter(username=username).count() > 0:

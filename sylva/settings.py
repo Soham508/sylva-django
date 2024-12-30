@@ -136,3 +136,25 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CACHES = {
+    # To set django local memory as default cachcing setup
+    'default': {
+       'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    } 
+    #'default': {
+    #    'BACKEND': 'django_redis.cache.RedisCache',
+    #    'LOCATION': 'redis://127.0.0.1:6379/1',  # Use localhost Docker container's IP
+    #    'OPTIONS': {
+    #        'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+    #    },
+    #    'KEY_PREFIX': 'sylva'
+    #}
+}
+
+CACHE_TTL = 60 * 10  # Default timeout in seconds (10 minutes)
+
+# Following is used when redis is used as default caaching, if redis fails to connect it sets django in memory for cache 
+#CACHES['fallback'] = {
+#    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#}
