@@ -28,3 +28,13 @@ class QuestionModelSerializer(serializers.Serializer):
 
 class QuestionScoresModelSerializer(serializers.Serializer):
     questions = QuestionModelSerializer(many=True)
+
+class InputSerializer(serializers.Serializer):
+    stocks = serializers.ListField(
+        child=serializers.CharField(),  
+        min_length=1,  
+        max_length=15,  
+    )
+    wealth = serializers.FloatField(min_value=0.01) 
+    questions = QuestionModelSerializer(many=True)
+    username = serializers.CharField()
