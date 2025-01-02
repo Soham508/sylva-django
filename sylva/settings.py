@@ -24,6 +24,7 @@ load_dotenv()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-1ci@v26*5&4d&a&1k@x@0t%7=l6q7s-ybish*dtqld!ahsxo0i'
 MONGO_KEY = os.getenv('MONGODB_CONNECTION_KEY')
+RABBITMQ_KEY = os.getenv('RABBITMQ')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -197,7 +198,7 @@ LOGGING = {
 }
 
 
-CELERY_BROKER_URL = 'amqps://eqigqvvx:C2zXD2CyXhsc6v7CWtAyfa-HO4hRx4Eh@puffin.rmq2.cloudamqp.com/eqigqvvx'
+CELERY_BROKER_URL = RABBITMQ_KEY
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'rpc://'  # Use RPC backend to retrieve results from tasks
