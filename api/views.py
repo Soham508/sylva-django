@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import User
 from rest_framework.decorators import api_view
-from .serializers import UserInputSerializer, QuestionScoresModelSerializer, UserSerializer
+from .serializers import InputSerializer, UserInputSerializer, QuestionScoresModelSerializer, UserSerializer
 from portfolioOptimizer import PortfolioOptimizer  
 from fuzzy_logic import calculate_risk_tolerance 
 import os
@@ -15,7 +15,12 @@ df = pd.read_csv(os.path.join(os.path.dirname(__file__), '../price_data.csv'))
 from .middleware import firebase_auth_required
 from firebase_admin import auth
 from django.core.cache import cache
+from celery import chain
+from api.tasks import calculate_A, generate_portfolio, calculate_risk_tolerance
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 def test(request): 
     return JsonResponse({"message": "Working..."}, status= 200)
@@ -54,12 +59,10 @@ def protected_view(request):
     return JsonResponse({"message": "You are authenticated!", "user": request.user}, status=200)
 
 class UserAPIView(APIView):
-    """
-    Create, retrieve, update or delete a user.
-    """
+
     def dispatch(self, request, *args, **kwargs):
         # using authentication for all methods except POST
-        if request.method not in ['POST', 'PATCH']:
+        if request.method not in ['POST', 'GET', 'PATCH']:
             id_token = request.headers.get('Authorization')
             if not id_token:
                 return JsonResponse({"error": "Authorization header is missing"}, status=401)
@@ -71,12 +74,15 @@ class UserAPIView(APIView):
 
             try:
                 decoded_token = auth.verify_id_token(id_token)
-                print("user authenticated")
+                logger.info("User authenticated successfully")
             except auth.ExpiredIdTokenError:
+                logger.error("Failed to authenticate the user") 
                 return JsonResponse({"error": "Token has expired"}, status=401)
             except auth.InvalidIdTokenError:
+                logger.error("Failed to authenticate the user")
                 return JsonResponse({"error": "Token is invalid"}, status=401)
             except Exception as e:
+                logger.error("Failed to authenticate the user")
                 return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
 
         return super().dispatch(request, *args, **kwargs)
@@ -110,6 +116,7 @@ class UserAPIView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save() 
+            logger.info("User created successfully") 
             return Response({"user": UserSerializer(user).data, "userCreated": True}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -125,7 +132,8 @@ class UserAPIView(APIView):
 
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
-            updated_user = serializer.save()  # Update the user
+            updated_user = serializer.save() 
+            logger.info("User updated successfully") 
             return Response({"detail":UserSerializer(updated_user).data, "success": True})
         return Response({"detail":serializer.errors, "success": False}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -140,7 +148,8 @@ class UserAPIView(APIView):
  
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
-            updated_user = serializer.save()  # Update the user
+            updated_user = serializer.save()  
+            logger.info("User updated successfully") 
             return Response(UserSerializer(updated_user).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
@@ -154,6 +163,7 @@ class UserAPIView(APIView):
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         user.delete()
+        logger.warning("User deleted successfully")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
@@ -161,13 +171,12 @@ def generate_risk_score(request):
     serializer = QuestionScoresModelSerializer(data=request.data)
     if serializer.is_valid():
         questions_scores = serializer.validated_data
+
         if len(questions_scores['questions']) != 10:
             return Response({"error": "Expected exactly 10 questions in the input."}, status=400)
 
-        # Extract scores from the input data
         scores = [question['score'] for question in questions_scores['questions']]
 
-        # Measure the time taken for the calculation
         start_time = time.time()
         risk_score = calculate_risk_tolerance(*scores)
         end_time = time.time()
@@ -176,6 +185,7 @@ def generate_risk_score(request):
         print(f"Calculation finished. Time taken: {duration:.4f} seconds.")
 
         return Response({"risk_tolerance_score": risk_score})
+
     return Response(serializer.errors, status=400)
 
 
@@ -253,4 +263,24 @@ def generate_portfolio(request):
 
         return Response(response_data)
     
+    return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+def calculate_portfolio(request):
+    serializer = InputSerializer(data=request.data)
+
+    if serializer.is_valid():
+       input_data = serializer.validated_data
+       print(input_data)
+       questions_scores = input_data['questions']
+       if len(questions_scores) != 10:
+           return Response({"error": "Expected exactly 10 questions in the input."}, status=400)   
+       # Extract scores from the input data
+       scores = [question['score'] for question in questions_scores]
+       username = input_data['username']
+       stocks = input_data['stocks']
+       wealth = input_data['wealth']
+       A_score = calculate_A.delay(scores, stocks, wealth, username)
+       return Response({"task_id": "done task"}, status=202)
+
     return Response(serializer.errors, status=400)

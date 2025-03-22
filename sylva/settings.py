@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    "api",
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -115,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -142,19 +143,54 @@ CACHES = {
     'default': {
        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     } 
-    #'default': {
-    #    'BACKEND': 'django_redis.cache.RedisCache',
-    #    'LOCATION': 'redis://127.0.0.1:6379/1',  # Use localhost Docker container's IP
-    #    'OPTIONS': {
-    #        'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-    #    },
-    #    'KEY_PREFIX': 'sylva'
-    #}
 }
 
 CACHE_TTL = 60 * 10  # Default timeout in seconds (10 minutes)
 
 # Following is used when redis is used as default caaching, if redis fails to connect it sets django in memory for cache 
-#CACHES['fallback'] = {
-#    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-#}
+CACHES['fallback'] = {
+    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+}
+
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # Keep existing loggers active
+
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'file': {
+            'level': 'INFO',  # Only log messages with level INFO or higher
+            'class': 'logging.FileHandler',
+            'filename': 'django.log',  # Log file name
+            'formatter': 'verbose',
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['file'],  # Only log to the file, no console output
+            'level': 'INFO',  # Log messages with level INFO or higher
+            'propagate': False,  # Prevent logs from propagating to parent loggers
+        },
+    },
+}
+
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'rpc://'  # Use RPC backend to retrieve results from tasks
+CELERY_TIMEZONE = 'UTC'
