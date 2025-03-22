@@ -10,13 +10,23 @@ class ApiConfig(AppConfig):
    
     def ready(self):
         load_dotenv()
-        credentials_path = os.getenv('FIREBASE_CREDENTIALS_PATH')
-
-        if not os.path.exists(credentials_path):
-            raise FileNotFoundError(f"Firebase credentials file not found at {credentials_path}")
-        
+   
         from firebase_admin import _apps
         if not _apps:
-            cred = credentials.Certificate(credentials_path)
-            initialize_app(cred)
-            print('firebase initiallized')
+            firebase_config = {
+            "type": "service_account",
+            "project_id": "sylva-687f1",
+            "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
+            "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace('\\n', '\n'),
+            "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+            "client_id": "102471103956928836899",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-4tedl%40sylva-687f1.iam.gserviceaccount.com",
+            "universe_domain": "googleapis.com"
+             }
+
+        # Initialize Firebase app
+        cred = credentials.Certificate(firebase_config)
+        firebase_admin.initialize_app(cred)
