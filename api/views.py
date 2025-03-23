@@ -87,10 +87,11 @@ class UserAPIView(APIView):
 
         return super().dispatch(request, *args, **kwargs)
     
-    def get(self, request, username=None):
-        print(username)
-        if username is not None:
-            cache_key = f"user_data_{username}"
+    def get(self, request):
+        print(request.data.get('email'))
+        email = request.data.get('email') 
+        if email is not None:
+            cache_key = f"user_data_{email}"
             cached_data = cache.get(cache_key)
     
             if cached_data:
@@ -98,7 +99,7 @@ class UserAPIView(APIView):
                 return Response({"user": cached_data, "success": True})
     
             try:
-                user = User.objects.get(username=username)
+                user = User.objects.get(email=email)
             except User.DoesNotExist:
                 return Response({"detail": "User not found.", "success": False}, status=status.HTTP_404_NOT_FOUND)
                
@@ -109,9 +110,9 @@ class UserAPIView(APIView):
     
         return Response({"detail": "User ID is required for GET.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
     def post(self, request):
-        username = request.data.get('username') 
-        if username and User.objects.filter(username=username).count() > 0:
-            return Response({"detail": "User with this username already exists.", "userCreated": False}, status=status.HTTP_400_BAD_REQUEST)
+        email = request.data.get('email') 
+        if email and User.objects.filter(email=email).count() > 0:
+            return Response({"detail": "User with this email already exists.", "userCreated": False}, status=status.HTTP_400_BAD_REQUEST)
     
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -121,12 +122,13 @@ class UserAPIView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def patch(self, request, username=None):
-        if username is None:
-            return Response({"detail": "Username is required for PATCH.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request):
+        email = request.data.get('email')
+        if email is None:
+            return Response({"detail": "email is required for PATCH.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
     
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
         except User.DoesNotExist:
             return Response({"detail": "User not found.", "success": False}, status=status.HTTP_404_NOT_FOUND)
 
@@ -137,12 +139,13 @@ class UserAPIView(APIView):
             return Response({"detail":UserSerializer(updated_user).data, "success": True})
         return Response({"detail":serializer.errors, "success": False}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, username=None):
-        if username is None:
-         return Response({"detail": "Username is required for PUT."}, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request):
+        email = request.data.get('email')   
+        if email is None:
+         return Response({"detail": "email is required for PUT."}, status=status.HTTP_400_BAD_REQUEST)
  
         try:
-         user = User.objects.get(username=username)
+         user = User.objects.get(email=email)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
  
@@ -153,12 +156,13 @@ class UserAPIView(APIView):
             return Response(UserSerializer(updated_user).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
-    def delete(self, request, pk=None):
-        if pk is None:
+    def delete(self, request):
+        email = request.data.get('email')
+        if email is None:
             return Response({"detail": "User ID is required for DELETE."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(email=email)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
