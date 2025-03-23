@@ -89,7 +89,7 @@ class UserAPIView(APIView):
     
     def get(self, request):
         print(request.data.get('email'))
-        email = request.data.get('email') 
+        email = request.query_params.get('email') 
         if email is not None:
             cache_key = f"user_data_{email}"
             cached_data = cache.get(cache_key)
