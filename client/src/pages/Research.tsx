@@ -4,9 +4,9 @@ import { SlEnergy } from "react-icons/sl";
 import { IoArrowForward } from "react-icons/io5";
 import { Footer } from "flowbite-react";
 import { Link } from "react-router-dom";
-import healthcareImage from "./../../public/healthcare.jpeg"
-import FMCGImage from "./../../public/FMCG.jpg"
-import EnergyImage from "./../../public/Energy.png"
+import healthcareImage from "../assets/healthcare.jpeg"
+import FMCGImage from "../assets/FMCG.jpg"
+import EnergyImage from "../assets/Energy.png"
 import { motion } from "framer-motion";
 
 const Research = () => {

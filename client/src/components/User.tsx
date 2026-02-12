@@ -1,16 +1,16 @@
 import { Dropdown } from "flowbite-react"
-import { Avatar } from "flowbite-react/components/Avatar"
 import { Button, Modal } from "flowbite-react";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { LogOut, Settings, FileText } from "lucide-react";
+import { LogOut, Settings, FileText, User2Icon } from "lucide-react";
 
 const User = () => {
     const [openModal, setOpenModal] = useState(false);
     const { currentUser, logout } = useAuth();
-    const photoURL = currentUser?.photoURL
+    const photoURL = currentUser?.photoURL || '';
+    console.log(photoURL)
 
     const handleLogOut = async () => {
         try {
@@ -27,12 +27,16 @@ const User = () => {
                 inline
                 label={
                     <div className="hover:ring-2 hover:ring-slate-200 rounded-full transition-all duration-300">
-                        <Avatar
-                            alt="User"
-                            img={photoURL ? photoURL : 'https://ui-avatars.com/api/?name=User&background=0F172A&color=fff'}
-                            rounded
-                            className="bg-slate-100"
-                        />
+                        {photoURL && photoURL?.length > 10 ? (
+                            <img
+                                src={photoURL}
+                                className="rounded-full h-10 w-10"
+                            />
+                        ) : (
+                            <div className="rounded-full bg-slate-200 h-8 w-8 flex items-center justify-center">
+                                <User2Icon size={24} className="text-slate-600" />
+                            </div>
+                        )}
                     </div>
                 }
                 className="w-64 p-2 rounded-xl shadow-xl border border-slate-100"

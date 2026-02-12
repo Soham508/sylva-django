@@ -177,27 +177,33 @@ const Dashboard = () => {
                 </div>
 
                 {!rebalance ? (
-                    <div className="grid lg:grid-cols-2 gap-8 items-start">
-                        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
-                            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-50">
-                                <Briefcase className="text-slate-400" size={24} />
-                                <h2 className="text-xl font-medium text-slate-900">Current Allocation</h2>
+                    <div className="flex flex-col gap-10">
+                        {/* Top Section: Distribution Visualization */}
+                        <div className="self-center w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                            <h2 className="text-xl font-medium text-slate-900 mb-8 text-center flex items-center justify-center gap-2">
+                                <PieChartIcon className="text-slate-400" size={24} />
+                                Portfolio Distribution
+                            </h2>
+                            <div className="flex justify-center w-full">
+                                <div className="max-w-xl w-full">
+                                    <Pie_Chart />
+                                </div>
                             </div>
-                            <PortfolioTable data={portfolioData?.initial_portfolio || {}} />
                         </div>
 
-                        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                            <div className="flex items-center gap-3 mb-8 w-full pb-4 border-b border-slate-50">
-                                <PieChartIcon className="text-slate-400" size={24} />
-                                <h2 className="text-xl font-medium text-slate-900">Distribution</h2>
+                        {/* Bottom Section: Detailed Table */}
+                        <div className="w-full bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-50">
+                                <Briefcase className="text-slate-400" size={24} />
+                                <h2 className="text-xl font-medium text-slate-900">Current Allocation Details</h2>
                             </div>
-                            <div className="w-full flex justify-center py-4">
-                                <Pie_Chart />
+                            <div className="w-full">
+                                <PortfolioTable data={portfolioData?.initial_portfolio || {}} />
                             </div>
                         </div>
                     </div>
                 ) : (
-                    <div className="w-full max-w-4xl mx-auto">
+                    <div className="w-full">
                         <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl mb-8 flex flex-row justify-between items-center">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-white/10 rounded-xl">

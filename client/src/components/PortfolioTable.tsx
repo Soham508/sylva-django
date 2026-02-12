@@ -1,15 +1,15 @@
+import React from "react";
+
 type StockEntry = {
     "%_of_portfolio": number;
     investment_amount: number;
-    quantity?: number; // Optional since "Risk_Free" may not have it
-    price_per_share?: number; // Optional since "Risk_Free" may not have it
+    quantity?: number;
+    price_per_share?: number;
 };
 
 type PortfolioData = {
     [ticker: string]: StockEntry;
 };
-
-import React from "react";
 
 interface PortfolioTableProps {
     data: PortfolioData;
@@ -17,43 +17,25 @@ interface PortfolioTableProps {
 
 const PortfolioTable: React.FC<PortfolioTableProps> = ({ data }) => {
     return (
-        <div className="overflow-x-auto rounded-xl max-h-[500px]  overflow-y-auto">
-            <table className="min-w-full bg-black/90 border border-gray-200">
-                <thead className="sticky top-0">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+            <table className="min-w-full divide-y divide-slate-200 bg-white text-sm">
+                <thead className="bg-slate-50">
                     <tr>
-                        <th className="py-3 px-6 bg-black border border-slate-200 font-semibold text-slate-100 text-sm uppercase text-left border-b ">
-                            Stock Ticker
-                        </th>
-                        <th className="py-3 px-6 bg-black border border-slate-200 font-semibold text-slate-100 text-sm uppercase text-left border-b ">
-                            % of Portfolio
-                        </th>
-                        <th className="py-3 px-6 bg-black border border-slate-200 font-semibold text-slate-100 text-sm uppercase text-left border-b ">
-                            Investment Amount
-                        </th>
-                        <th className="py-3 px-6 bg-black border border-slate-200 font-semibold text-slate-100 text-sm uppercase text-left border-b ">
-                            Quantity
-                        </th>
-                        <th className="py-3 px-6 bg-black border border-slate-200 font-semibold text-slate-100 text-sm uppercase text-left border-b ">
-                            Price per Share
-                        </th>
+                        <th className="px-6 py-4 text-left font-medium text-slate-500 uppercase tracking-wider">Stock Ticker</th>
+                        <th className="px-6 py-4 text-right font-medium text-slate-500 uppercase tracking-wider">% Portfolio</th>
+                        <th className="px-6 py-4 text-right font-medium text-slate-500 uppercase tracking-wider">Amount (₹)</th>
+                        <th className="px-6 py-4 text-right font-medium text-slate-500 uppercase tracking-wider">Quantity</th>
+                        <th className="px-6 py-4 text-right font-medium text-slate-500 uppercase tracking-wider">Price (₹)</th>
                     </tr>
                 </thead>
-                <tbody className="">
+                <tbody className="divide-y divide-slate-100">
                     {Object.entries(data).map(([ticker, details]) => (
-                        <tr key={ticker} className="border-b border-gray-700">
-                            <td className="py-4 px-6 border border-slate-200 text-slate-100 font-medium">{ticker}</td>
-                            <td className="py-4 px-6 border border-slate-200 text-slate-100">
-                                {details["%_of_portfolio"].toFixed(2)}
-                            </td>
-                            <td className="py-4 px-6 border border-slate-200 text-slate-100">
-                                {details.investment_amount.toLocaleString()}
-                            </td>
-                            <td className="py-4 px-6 border border-slate-200 text-slate-100">
-                                {details.quantity ? details.quantity.toFixed(4) : "N/A"}
-                            </td>
-                            <td className="py-4 px-6 border border-slate-200 text-slate-100">
-                                {details.price_per_share ? details.price_per_share.toFixed(2) : "N/A"}
-                            </td>
+                        <tr key={ticker} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4 font-medium text-slate-900 border-r border-slate-50">{ticker}</td>
+                            <td className="px-6 py-4 text-right text-slate-600">{details["%_of_portfolio"].toFixed(2)}%</td>
+                            <td className="px-6 py-4 text-right text-slate-600">{details.investment_amount.toLocaleString('en-IN')}</td>
+                            <td className="px-6 py-4 text-right text-slate-600">{details.quantity ? details.quantity.toFixed(4) : "N/A"}</td>
+                            <td className="px-6 py-4 text-right text-slate-600">{details.price_per_share ? details.price_per_share.toFixed(2) : "N/A"}</td>
                         </tr>
                     ))}
                 </tbody>

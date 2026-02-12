@@ -109,6 +109,7 @@ class UserAPIView(APIView):
             return Response({"user": serializer.data, "success": True})
     
         return Response({"detail": "User ID is required for GET.", "success": False}, status=status.HTTP_400_BAD_REQUEST)
+        
     def post(self, request):
         email = request.data.get('email') 
         if email and User.objects.filter(email=email).count() > 0:

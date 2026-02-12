@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import fmcgGraph from "./../../../public/fmcg_graph.jpg";
+import fmcgGraph from "./../../assets/fmcg_graph.jpg";
 import { MdPictureAsPdf } from "react-icons/md";
 import { Footer } from "flowbite-react";
 import { Link } from "react-router-dom";

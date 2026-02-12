@@ -64,8 +64,8 @@ const Pie_Chart: React.FC = () => {
             chartType="PieChart"
             data={data}
             options={options}
-            width={"90%"}
-            height={"500px"}
+            width={"100%"}
+            height={"100%"}
         />
     );
 }

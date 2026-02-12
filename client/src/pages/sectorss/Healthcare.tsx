@@ -1,4 +1,4 @@
-import pharmaGraph from "./../../../public/pharma_graph.jpg";
+import pharmaGraph from "./../../assets/pharma_graph.jpg";
 import { MdPictureAsPdf } from "react-icons/md";
 import { Footer } from "flowbite-react";
 import { Link } from "react-router-dom";

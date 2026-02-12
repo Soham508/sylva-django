@@ -1,4 +1,4 @@
-import energyGraph from "./../../../public/energy_graph.jpg"
+import energyGraph from "./../../assets/energy_graph.jpg"
 import { MdPictureAsPdf } from "react-icons/md";
 import { Footer } from "flowbite-react";
 import { Link } from "react-router-dom";
