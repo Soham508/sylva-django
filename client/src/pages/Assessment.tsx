@@ -1,7 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { ArrowLeft, ArrowRight, Check, Send, Coins } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Coins } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
