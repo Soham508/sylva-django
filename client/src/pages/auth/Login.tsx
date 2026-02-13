@@ -1,4 +1,4 @@
-import logo from "/sylva_logo_black.png";
+import logo from "/src/assets/sylva_logo_black.png";
 import { useAuth } from '../../context/AuthContext';
 import { Navigate } from "react-router-dom";
 import { MdEmail } from "react-icons/md";
