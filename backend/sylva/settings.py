@@ -62,7 +62,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  
-    "https://sylva-django.vercel.app/",  
+    "https://sylva-django.vercel.app",  
 ]
 
 ROOT_URLCONF = 'sylva.urls'
