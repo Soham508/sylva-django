@@ -92,9 +92,10 @@ WSGI_APPLICATION = 'sylva.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'sylva', 
+        'NAME': os.getenv("MONGO_DB_NAME"),
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': MONGO_KEY,  
+            'host': os.getenv("MONGO_URL"),
         }
     }
 }
