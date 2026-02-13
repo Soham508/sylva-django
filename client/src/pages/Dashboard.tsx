@@ -8,6 +8,7 @@ import axios from "axios";
 import Pie_Chart from "@/components/Pie_Chart";
 import { useNavigate } from "react-router-dom";
 import { AlertTriangle, RefreshCw, Briefcase, PieChart as PieChartIcon, TrendingUp } from "lucide-react";
+import { API_BASE_URL } from "@/constants";
 
 export interface Portfolio {
     initial_portfolio: StockPortfolio;
@@ -90,7 +91,7 @@ const Dashboard = () => {
         try {
             const email = currentUser?.email || '';
             const res = await axios.get(
-                `https://sylva-django.onrender.com/api/users/?email=${email}`
+                `${API_BASE_URL}/api/users/?email=${email}`
             );
             console.log(res.data)
             if (res.data.success) {

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Portfolio } from '../pages/Dashboard';
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
+import { API_BASE_URL } from "@/constants";
 
 
 const Pie_Chart: React.FC = () => {
@@ -13,7 +14,7 @@ const Pie_Chart: React.FC = () => {
         try {
             const email = currentUser?.email || '';
             const idToken = await currentUser?.getIdToken();
-            const res = await axios.get(`https://sylva-django.onrender.com/api/users/`, {
+            const res = await axios.get(`${API_BASE_URL}/api/users/`, {
                 params: { email },
                 headers: {
                     Authorization: `Bearer ${idToken}`,

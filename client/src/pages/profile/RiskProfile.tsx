@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Mosaic } from "react-loading-indicators";
 import { questions, tickerQuestion } from "@/constants/assessmentData";
+import { API_BASE_URL } from "@/constants";
 import { Slider } from "@/components/ui/slider";
 import { Check, Coins, Save, AlertTriangle, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +40,7 @@ const RiskProfile = () => {
         const fetchUserData = async () => {
             if (!currentUser?.email) return;
             try {
-                const res = await axios.get(`https://sylva-django.onrender.com/api/users/?email=${currentUser.email}`);
+                const res = await axios.get(`${API_BASE_URL}/api/users/?email=${currentUser.email}`);
                 if (res.data.success) {
                     const user = res.data.user;
                     setUserA(user.A);
@@ -77,13 +78,13 @@ const RiskProfile = () => {
 
         try {
             // 1. Calculate A
-            const riskScoreRes = await axios.post('https://sylva-django.onrender.com/api/risk_aversion/', {
+            const riskScoreRes = await axios.post(`${API_BASE_URL}/api/risk_aversion/`, {
                 questions: riskState.questions
             });
             const newA = riskScoreRes.data.risk_tolerance_score;
 
             // 2. Generate Portfolio
-            const portfolioRes = await axios.post('https://sylva-django.onrender.com/api/generate_portfolio/', {
+            const portfolioRes = await axios.post(`${API_BASE_URL}/api/generate_portfolio/`, {
                 a: newA,
                 stocks: riskState.tickers,
                 wealth: riskState.Investment_ammount || 100 // fallback
@@ -99,12 +100,11 @@ const RiskProfile = () => {
                 A: newA
             };
 
-            const updateRes = await axios.patch(`https://sylva-django.onrender.com/api/users/`, updateBody);
+            const updateRes = await axios.patch(`${API_BASE_URL}/api/users/`, updateBody);
 
             if (updateRes.data.success) {
                 setSuccess("Profile updated successfully!");
                 setUserA(newA);
-                // Refresh data/layout if needed
             } else {
                 setError("Failed to update user profile.");
             }

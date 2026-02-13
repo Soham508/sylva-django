@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { questions, tickerQuestion } from "@/constants/assessmentData";
+import { API_BASE_URL } from "@/constants";
 
 // Re-exporting types for local usage if needed, or just using imports
 type RiskOption = {
@@ -33,7 +34,7 @@ const Assessment = () => {
         };
 
         try {
-            const response = await axios.post('https://sylva-django.onrender.com/api/risk_aversion/', body);
+            const response = await axios.post(`${API_BASE_URL}/api/risk_aversion/`, body);
             return response.data.risk_tolerance_score
         } catch (error) {
             console.error('Error making POST request:', error);
@@ -53,7 +54,7 @@ const Assessment = () => {
         };
 
         try {
-            const response = await axios.post('https://sylva-django.onrender.com/api/generate_portfolio/', body);
+            const response = await axios.post(`${API_BASE_URL}/api/generate_portfolio/`, body);
             const initial_portfolio = response.data.initial_portfolio;
             const target_portfolio = response.data.target_portfolio;
             const actions = response.data.actions;
@@ -69,7 +70,7 @@ const Assessment = () => {
             };
 
             try {
-                const response = await axios.patch(`https://sylva-django.onrender.com/api/users/`, requestBody);
+                const response = await axios.patch(`${API_BASE_URL}/api/users/`, requestBody);
                 if (response.data.success) {
                     navigate('/')
                 }

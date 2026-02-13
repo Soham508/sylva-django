@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 // src/context/AuthContext.ts
+import { API_BASE_URL } from '@/constants';
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth, signInWithPopup, provider, signOut } from '../firebase';
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("ID Token:", idToken);
 
       try {
-        const registerResponse = await axios.post('https://sylva-django.onrender.com/api/users/', {
+        const registerResponse = await axios.post(`${API_BASE_URL}/api/users/`, {
           username,
           email,
           profile_picture_url,
