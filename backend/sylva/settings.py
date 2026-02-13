@@ -21,8 +21,7 @@ load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1ci@v26*5&4d&a&1k@x@0t%7=l6q7s-ybish*dtqld!ahsxo0i'
+SECRET_KEY = os.getenv('FIREBASE_SECRET_KEY')
 MONGO_KEY = os.getenv('MONGODB_CONNECTION_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -62,7 +61,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  
-    "https://sylva-jt4j.vercel.app",  
+    "https://sylva-django.vercel.app",  
 ]
 
 ROOT_URLCONF = 'sylva.urls'
